@@ -7,6 +7,7 @@ from telegram.ext import Updater, CommandHandler
 TOKEN = '1081971757:AAF9THRcvkp7IPty2AkOYPIanaWEzL3FDJ0'
 BOT = Bot(TOKEN)
 
+
 def print_group_id(update: Update, context):
 	"""Usage: /id"""
 	group_id = update.message.chat.id
