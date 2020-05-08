@@ -1,10 +1,11 @@
 from typing import Tuple
 
-from telegram import Update
+from telegram import Update, TelegramError
+from telegram import Bot
 from telegram.ext import Updater, CommandHandler
 
 TOKEN = '1081971757:AAF9THRcvkp7IPty2AkOYPIanaWEzL3FDJ0'
-
+BOT = Bot(TOKEN)
 
 def print_group_id(update: Update, context):
 	"""Usage: /id"""
@@ -15,11 +16,18 @@ def print_group_id(update: Update, context):
 def select_group(update: Update, context):
 	"""Usage: /select group_id"""
 	key = update.message.from_user.id
-	value = int(update.message.text.partition(' ')[2])
-	
-	# Store new value
-	context.bot_data[key] = value
-	reply = f'Group \'{value}\' has been selected.'
+	try:
+		value = int(update.message.text.partition(' ')[2])
+		
+		# Store new value
+		context.bot_data[key] = value
+		try:
+			group_name = BOT.get_chat(value).title
+			reply = f'Group \'{group_name}\' has been selected.'
+		except TelegramError:
+			reply = f'\'{value}\' is not a valid group identifier.'
+	except ValueError:
+		reply = 'Group identifier must be a number.'
 	update.message.reply_text(reply)
 
 
